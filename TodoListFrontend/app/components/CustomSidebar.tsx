@@ -9,9 +9,11 @@ import {
 } from "@mui/material";
 import React from "react";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import FolderIcon from '@mui/icons-material/Folder';
 import MapIcon from "@mui/icons-material/Map";
+import { Link } from "react-router";
 
-export default function Sidebar({ children }: { children: React.ReactNode }) {
+export default function CustomSidebar({ children }: { children: React.ReactNode }) {
   const drawerWidth = 240;
 
   return (
@@ -24,21 +26,19 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           [`& .MuiDrawer-paper`]: {
             width: drawerWidth,
             boxSizing: "border-box",
-            // backgroundColor: "#838485",
-            // color: "white",
           },
         }}
       >
-        <Toolbar /> {/* Adds spacing so menu items don't hide behind AppBar */}
+        <Toolbar />
         <Box sx={{ overflow: "auto" }}>
           <List>
-            <ListItemButton component="a" href="/">
+            <ListItemButton component={Link} to="/">
               <ListItemIcon>
-                <FormatListBulletedIcon />
+                <FolderIcon />
               </ListItemIcon>
-              <ListItemText primary="Todos" />
+              <ListItemText primary="Todos & Tasks" />
             </ListItemButton>
-            <ListItemButton component="a" href="/map">
+            <ListItemButton component={Link} to="/map">
               <ListItemIcon>
                 <MapIcon />
               </ListItemIcon>

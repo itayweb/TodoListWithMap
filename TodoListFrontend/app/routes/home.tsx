@@ -1,20 +1,18 @@
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
 import {
   Box,
-  Button,
-  Drawer,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
+  Tab,
+  Tabs,
+  type SelectChangeEvent,
 } from "@mui/material";
-import Sidebar from "~/components/sidebar";
-import MyTable from "~/components/mytable";
-// import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
+import CustomSidebar from "~/components/CustomSidebar";
+import { useEffect, useState } from "react";
+import { fetchTasksAtom, fetchTodosAtom, selectedTodosAtom, tasksAtom, todosAtom } from "~/atoms";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import TodosContainer from "~/components/TodosContainer";
+import TasksContainer from "~/components/TasksContainer";
 
-export function meta({}: Route.MetaArgs) {
+export function meta({ }: Route.MetaArgs) {
   return [
     { title: "New React Router App" },
     { name: "description", content: "Welcome to React Router!" },
@@ -22,28 +20,39 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  const drawerWidth = 240;
+  const [tabValue, setTabValue] = useState(0);
+
+  const [selectedTodo, setSelectedTodo] = useAtom(selectedTodosAtom);
+  const fetchTasks = useSetAtom(fetchTasksAtom);
+  const fetchTodos = useSetAtom(fetchTodosAtom);
+
+  useEffect(() => {
+    const initialFetch = async () => {
+      await fetchTodos();
+      await fetchTasks('');
+    }
+
+    initialFetch();
+  }, []);
 
   return (
-    <Sidebar>
-      <Box
-        sx={{
-          display: "flex",
-          gap: "1.5vw",
-        }}
-      >
-        <Button variant="contained">Create Task</Button>
-        <Button variant="contained">Update Task</Button>
-        <Button variant="contained">Delete Task</Button>
-      </Box>
+    <CustomSidebar>
+      <Tabs value={tabValue} onChange={(e, value) => setTabValue(value)} centered>
+        <Tab label="Todos" />
+        <Tab label="Tasks" />
+      </Tabs>
+      {
+        tabValue === 0 ?
+          <TodosContainer />
+          : <TasksContainer />
+      }
       <Box
         sx={{
           marginY: "5vh",
           marginX: "2.5vw",
         }}
       >
-        <MyTable />
       </Box>
-    </Sidebar>
+    </CustomSidebar>
   );
 }
