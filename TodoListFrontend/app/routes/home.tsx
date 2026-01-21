@@ -22,7 +22,6 @@ export function meta({ }: Route.MetaArgs) {
 export default function Home() {
   const [tabValue, setTabValue] = useState(0);
 
-  const [selectedTodo, setSelectedTodo] = useAtom(selectedTodosAtom);
   const fetchTasks = useSetAtom(fetchTasksAtom);
   const fetchTodos = useSetAtom(fetchTodosAtom);
 
