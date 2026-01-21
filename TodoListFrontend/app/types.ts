@@ -84,3 +84,8 @@ export type TodoCardProps = {
     todo: Todo,
     setActiveModal: (modalToActivate: string, selectTodo: Todo) => void
 }
+
+export type User = {
+    username: string,
+    password: string
+}

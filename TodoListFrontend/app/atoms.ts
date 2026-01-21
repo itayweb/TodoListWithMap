@@ -1,7 +1,9 @@
 import { atom } from 'jotai'
-import type { Task, Todo } from './types';
+import { type User, type Task, type Todo } from './types';
 import { fetchTodos } from './api/todos';
 import { fetchTasks, fetchTasksById } from './api/tasks';
+import { getUser } from './api/auth';
+import api from './api/api';
 
 export const todosAtom = atom<Todo[]>([]);
 
@@ -19,11 +21,9 @@ export const fetchTasksAtom = atom((get) => get(selectedTodosAtom), async (get, 
 
     if (todoId === '') {
         const data = await fetchTasks();
-        console.log("data: ", data);
         set(tasksAtom, data);
     } else {
         const data = await fetchTasksById(todoId);
-        console.log("data: ", data);
         set(tasksAtom, data);
     }
 });
@@ -31,3 +31,38 @@ export const fetchTasksAtom = atom((get) => get(selectedTodosAtom), async (get, 
 export const selectedTaskAtom = atom<Task>();
 
 export const modalAtom = atom('');
+
+export const userAtom = atom<User | null>(null);
+
+export const authLoadingAtom = atom(false);
+
+// Action: Registration
+export const registerAction = atom(null, async (get, set, newUser: User) => {
+    await api.post('/auth/register', newUser);
+    const res = await api.post('/auth/login', newUser);
+    set(userAtom, res.data);
+});
+
+// Action: Login
+export const loginAction = atom(null, async (get, set, user: User) => {
+    const res = await api.post('/auth/login', user);
+    set(userAtom, res.data);
+});
+
+export const logoutAction = atom(null, async (get, set, user: User) => {
+    await api.post("/auth/logout", user);
+    set(userAtom, null);
+});
+
+// Action: Check Auth (for app startup)
+export const checkAuthAction = atom(null, async (get, set) => {
+    set(authLoadingAtom, true);
+    try {
+        const res = await api.get('/auth/user');
+        set(userAtom, res.data);
+    } catch {
+        set(userAtom, null);
+    } finally {
+        set(authLoadingAtom, false);
+    }
+});

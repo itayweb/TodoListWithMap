@@ -1,31 +1,33 @@
 import express from 'express';
-import { Todo, Task } from '../models/models.js';
+import { Todo, User } from '../models/models.js';
+import { isAuthenticated } from '../middleware/auth.js';
 
 const router = express.Router();
 
 // POST Route
-router.post('/create', async (req, res) => {
+router.post('/create', isAuthenticated, async (req, res) => {
     try {
         console.log("creating new todo");
-        const newTask = new Todo(req.body);
-        const task = await newTask.save();
-        res.status(201).send(task);
+        req.body.user = req.user._id;
+        const newTodo = new Todo(req.body);
+        const todo = await newTodo.save();
+        res.status(201).send(todo);
     } catch (err) {
         res.status(400).send(err.message)
     }
 });
 
-router.get('/fetch', async (req, res) => {
+router.get('/fetch', isAuthenticated, async (req, res) => {
     try {
         console.log("retrieving all todos");
-        const tasks = await Todo.find({});
-        res.json(tasks);
+        const todos = await Todo.find({ user: req.user._id });
+        res.json(todos);
     } catch (err) {
         res.status(500).send(err.message);
     }
 });
 
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', isAuthenticated, async (req, res) => {
     try {
         console.log(`removing specific todo: ${req.params.id}`);
         const id = req.params.id;
@@ -48,7 +50,7 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-router.patch('/update/:id', async (req, res) => {
+router.patch('/update/:id', isAuthenticated, async (req, res) => {
     try {
         console.log(`updating specific todo: ${req.params.id}`);
         const id = req.params.id;

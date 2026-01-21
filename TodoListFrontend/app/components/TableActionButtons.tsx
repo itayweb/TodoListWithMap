@@ -18,7 +18,6 @@ export default function TableActionButtons({ row }: { row: Row<Task> }) {
     }
 
     const handleEditRow = () => {
-        console.log("task: ", row.original);
         setSelectedTask(row.original);
         setActiveModal('update_task');
     }

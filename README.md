@@ -35,7 +35,7 @@ Setup the MongoDB cluster:
 ```bash
 mongodb://admin:password@localhost:27017/
 ```
-- Create 2 new collections: tasks, and todos in local db
+- Create 2 new collections: todos, and users in local db
 
 Start the development server:
 

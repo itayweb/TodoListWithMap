@@ -11,6 +11,9 @@ import type { Route } from "./+types/root";
 import { Provider } from "jotai";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { customLightTheme } from "./theme";
+import { useEffect } from "react";
+import { useSetAtom } from "jotai";
+import { checkAuthAction } from "./atoms";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -43,11 +46,23 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+function AuthInitializer() {
+  const checkAuth = useSetAtom(checkAuthAction);
+
+  useEffect(() => {
+    // Check if user is authenticated via cookie on app startup
+    checkAuth();
+  }, [checkAuth]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <Provider>
       <ThemeProvider theme={customLightTheme}>
         <CssBaseline />
+        <AuthInitializer />
         <Outlet />
       </ThemeProvider>
     </Provider>
