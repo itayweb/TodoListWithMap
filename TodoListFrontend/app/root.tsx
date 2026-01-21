@@ -50,7 +50,6 @@ function AuthInitializer() {
   const checkAuth = useSetAtom(checkAuthAction);
 
   useEffect(() => {
-    // Check if user is authenticated via cookie on app startup
     checkAuth();
   }, [checkAuth]);
 

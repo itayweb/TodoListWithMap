@@ -4,7 +4,6 @@ import { isAuthenticated } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// POST Route
 router.post('/create', isAuthenticated, async (req, res) => {
     try {
         console.log("creating new todo");
@@ -31,17 +30,14 @@ router.delete('/delete/:id', isAuthenticated, async (req, res) => {
     try {
         console.log(`removing specific todo: ${req.params.id}`);
         const id = req.params.id;
-        // 1. Find the todo to get the list of task IDs
         const todo = await Todo.findById(id);
 
         if (!todo) {
             return res.status(404).json({ message: 'Todo not found' });
         }
 
-        // 2. Delete all tasks whose IDs are in the todo's tasks array
         await Task.deleteMany({ _id: { $in: todo.tasks } });
 
-        // 3. Delete the todo itself
         await Todo.findByIdAndDelete(id);
 
         res.send("Todo removed successfully!")

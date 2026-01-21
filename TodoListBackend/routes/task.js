@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 
 const router = express.Router();
 
-// POST Route
 router.post('/create/:id', isAuthenticated, async (req, res) => {
     try {
         console.log(`creating new task for this todo: ${req.params.id}`);
@@ -17,7 +16,6 @@ router.post('/create/:id', isAuthenticated, async (req, res) => {
             return res.status(404).send("Todo not found");
         }
 
-        // Verify the todo belongs to the authenticated user
         if (todo.user.toString() !== req.user._id.toString()) {
             return res.status(403).send("Unauthorized: You don't own this todo");
         }
@@ -25,7 +23,6 @@ router.post('/create/:id', isAuthenticated, async (req, res) => {
         todo.tasks.push(req.body);
         await todo.save();
 
-        // Return the newly created task (last item in the tasks array)
         const newTask = todo.tasks[todo.tasks.length - 1];
         res.status(201).send(newTask);
     } catch (err) {
@@ -42,7 +39,6 @@ router.get('/fetch/:id', isAuthenticated, async (req, res) => {
             return res.status(404).send("Todo not found");
         }
 
-        // Verify the todo belongs to the authenticated user
         if (todo.user.toString() !== req.user._id.toString()) {
             return res.status(403).send("Unauthorized: You don't own this todo");
         }
@@ -77,7 +73,6 @@ router.delete('/remove/:id', isAuthenticated, async (req, res) => {
             return res.status(404).send("Todo not found");
         }
 
-        // Verify the todo belongs to the authenticated user
         if (todo.user.toString() !== req.user._id.toString()) {
             return res.status(403).send("Unauthorized: You don't own this todo");
         }
@@ -101,17 +96,15 @@ router.patch('/update/:id', isAuthenticated, async (req, res) => {
         const id = req.params.id;
         const todo = await Todo.findOne({
             "tasks._id": id,
-            user: req.user._id // Ensure ownership at the query level
+            user: req.user._id
         });
 
         if (!todo) {
             return res.status(404).send("Todo or Task not found");
         }
 
-        // Access the specific task subdocument
         const task = todo.tasks.id(id);
 
-        // Update and save
         task.set(req.body);
         await todo.save();
 

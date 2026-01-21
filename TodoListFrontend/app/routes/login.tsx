@@ -20,7 +20,6 @@ export default function Login() {
     const user = useAtomValue(userAtom);
     const authLoading = useAtomValue(authLoadingAtom);
 
-    // Redirect if already authenticated
     if (authLoading) {
         return (
             <Box sx={{
@@ -50,7 +49,6 @@ export default function Login() {
                 navigate('/');
             }
         } catch (err) {
-            // setError(err instanceof Error ? err.message : 'An error occurred');
             toast.error(err instanceof Error ? err.message : 'An error occurred', {
                 position: "bottom-right",
                 autoClose: 5000,
@@ -97,7 +95,6 @@ export default function Login() {
                                 <TextField
                                     fullWidth
                                     label="Username"
-                                    // type="email"
                                     value={field.value}
                                     onChange={field.onChange}
                                     placeholder="username"

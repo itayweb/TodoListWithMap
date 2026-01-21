@@ -36,14 +36,12 @@ export const userAtom = atom<User | null>(null);
 
 export const authLoadingAtom = atom(false);
 
-// Action: Registration
 export const registerAction = atom(null, async (get, set, newUser: User) => {
     await api.post('/auth/register', newUser);
     const res = await api.post('/auth/login', newUser);
     set(userAtom, res.data);
 });
 
-// Action: Login
 export const loginAction = atom(null, async (get, set, user: User) => {
     const res = await api.post('/auth/login', user);
     set(userAtom, res.data);
@@ -54,7 +52,6 @@ export const logoutAction = atom(null, async (get, set, user: User) => {
     set(userAtom, null);
 });
 
-// Action: Check Auth (for app startup)
 export const checkAuthAction = atom(null, async (get, set) => {
     set(authLoadingAtom, true);
     try {
